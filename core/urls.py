@@ -18,12 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from rest_framework_simplejwt.views import (
-    # TokenObtainPairView,
-    TokenRefreshView,
-    # TokenBlacklistView,
+from rest_framework_simplejwt.views import TokenRefreshView
+from users.views import (
+    UserRegistrationView,
+    CustomTokenObtainPairView,
+    CustomTokenBlacklistView,
+    UserListCreateView,
+    UserRetrieveUpdateDestroyView,
 )
-from users.views import UserRegistrationView, CustomTokenObtainPairView, CustomTokenBlacklistView
 
 # Swagger/OpenAPI documentation setup
 schema_view = get_schema_view(
@@ -48,4 +50,8 @@ urlpatterns = [
     # API documentation (Swagger/Redoc)
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    
+    # User CRUD endpoints
+    path('api/users/', UserListCreateView.as_view(), name='user-list-create'),
+    path('api/users/<int:pk>/', UserRetrieveUpdateDestroyView.as_view(), name='user-retrieve-update-destroy'),
 ]

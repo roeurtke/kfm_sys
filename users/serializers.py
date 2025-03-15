@@ -56,3 +56,9 @@ class CustomTokenBlacklistSerializer(TokenBlacklistSerializer):
             return {"message": "Logout successfully"}
         except Exception as e:
             raise serializers.ValidationError({"message": "Invalid token. Please check your refresh token."})
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+        read_only_fields = ('id',)  # Prevent ID from being modified        

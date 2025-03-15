@@ -61,4 +61,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'email', 'first_name', 'last_name')
-        read_only_fields = ('id',)  # Prevent ID from being modified        
+        read_only_fields = ('id',)  # Prevent ID from being modified

@@ -19,11 +19,11 @@ from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
+    # TokenObtainPairView,
     TokenRefreshView,
-    TokenBlacklistView,
+    # TokenBlacklistView,
 )
-from users.views import UserRegistrationView
+from users.views import UserRegistrationView, CustomTokenObtainPairView, CustomTokenBlacklistView
 
 # Swagger/OpenAPI documentation setup
 schema_view = get_schema_view(
@@ -41,9 +41,9 @@ urlpatterns = [
 
     # Authentication endpoints
     path('api/register/', UserRegistrationView.as_view(), name='register'),
-    path('api/login/', TokenObtainPairView.as_view(), name='login'),
+    path('api/login/', CustomTokenObtainPairView.as_view(), name='login'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/logout/', TokenBlacklistView.as_view(), name='logout'),
+    path('api/logout/', CustomTokenBlacklistView.as_view(), name='logout'),
 
     # API documentation (Swagger/Redoc)
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

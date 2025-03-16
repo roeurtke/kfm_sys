@@ -111,18 +111,39 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
     
     def to_representation(self, instance):
-        if self.context.get('is_update', False):
-            message = "User updated successfully"
-        else:
-            message = "User created successfully"
-        return {
-            "message": message,
-            "user": {
+        # Check if this is a list view (many=True)
+        # Return only the user data without the message
+        if self.context.get('is_list_view', False):
+            return {
                 "id": instance.id,
                 "username": instance.username,
                 "email": instance.email,
                 "first_name": instance.first_name,
                 "last_name": instance.last_name,
-                "role": instance.role.name if instance.role else None,
+                "role": instance.role.name if instance.role else None
             }
-        }
+        elif self.context.get('is_create', False) or self.context.get('is_update', False):
+            if self.context.get('is_update', False):
+                message = "User updated successfully"
+            else:
+                message = "User created successfully"
+            return {
+                "message": message,
+                "user": {
+                    "id": instance.id,
+                    "username": instance.username,
+                    "email": instance.email,
+                    "first_name": instance.first_name,
+                    "last_name": instance.last_name,
+                    "role": instance.role.name if instance.role else None
+                }
+            }
+        else:
+            return {
+                "id": instance.id,
+                "username": instance.username,
+                "email": instance.email,
+                "first_name": instance.first_name,
+                "last_name": instance.last_name,
+                "role": instance.role.name if instance.role else None
+            }

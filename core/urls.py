@@ -23,8 +23,6 @@ from users.views import (
     UserRegistrationView,
     CustomTokenObtainPairView,
     CustomTokenBlacklistView,
-    UserListCreateView,
-    UserRetrieveUpdateDestroyView,
 )
 
 # Swagger/OpenAPI documentation setup
@@ -52,8 +50,7 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     
     # User CRUD endpoints
-    path('api/users/', UserListCreateView.as_view(), name='user-list-create'),
-    path('api/users/<int:pk>/', UserRetrieveUpdateDestroyView.as_view(), name='user-retrieve-update-destroy'),
+    path('api/users/', include('users.urls')),
     
     # Role CRUD endpoints
     path('api/roles/', include('roles.urls')),

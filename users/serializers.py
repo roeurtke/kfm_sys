@@ -107,6 +107,10 @@ class UserSerializer(serializers.ModelSerializer):
         if 'role' in validated_data:
             instance.role = validated_data['role']
         
+        # Update the password if provided
+        if 'password' in validated_data:
+            instance.password(validated_data['password'])
+            
         instance.save()
         return instance
     
@@ -125,6 +129,7 @@ class UserSerializer(serializers.ModelSerializer):
                 "email": instance.email,
                 "first_name": instance.first_name,
                 "last_name": instance.last_name,
-                "role": instance.role.name if instance.role else None
+                "role": instance.role.name if instance.role else None,
+                "password": instance.password
             }
         }

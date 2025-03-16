@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
+from roles.models import Role
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.serializers import TokenBlacklistSerializer
 
@@ -58,7 +59,72 @@ class CustomTokenBlacklistSerializer(TokenBlacklistSerializer):
             raise serializers.ValidationError({"message": "Invalid token. Please check your refresh token."})
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SlugRelatedField(
+        queryset=Role.objects.all(),  # Fetch all roles from the database
+        slug_field='name',  # Use the 'name' field of the Role model
+        allow_null=True,  # Allow the role to be null
+        required=False  # The role field is optional
+    )
+
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role')
         read_only_fields = ('id',)  # Prevent ID from being modified
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Make username and email optional during updates
+        if self.context.get('request').method in ['PUT', 'PATCH']:
+            self.fields['username'].required = False
+            self.fields['email'].required = False
+
+    def create(self, validated_data):
+        role_data = validated_data.pop('role', None)  # Extract the role data
+        user = CustomUser.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', ''),
+            password=validated_data.get('password', '')  # Password is optional here
+        )
+        
+        # Assign the role if provided
+        if role_data:
+            user.role = role_data
+            user.save()
+        
+        return user
+
+    def update(self, instance, validated_data):
+        # Update the user instance with the validated data
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        
+        # Update the role if provided
+        if 'role' in validated_data:
+            instance.role = validated_data['role']
+        
+        instance.save()
+        return instance
+    
+    def to_representation(self, instance):
+        # Customize the response for both create and update operations
+        if self.context.get('is_update', False):
+            message = "User updated successfully"
+        else:
+            message = "User created successfully"
+
+        return {
+            "message": message,
+            "user": {
+                "id": instance.id,
+                "username": instance.username,
+                "email": instance.email,
+                "first_name": instance.first_name,
+                "last_name": instance.last_name,
+                "role": instance.role.name if instance.role else None
+            }
+        }

@@ -54,4 +54,8 @@ urlpatterns = [
     # User CRUD endpoints
     path('api/users/', UserListCreateView.as_view(), name='user-list-create'),
     path('api/users/<int:pk>/', UserRetrieveUpdateDestroyView.as_view(), name='user-retrieve-update-destroy'),
+    
+    # Role CRUD endpoints
+    path('api/roles/', include('roles.urls')),
+
 ]

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'users',
+    'roles',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'

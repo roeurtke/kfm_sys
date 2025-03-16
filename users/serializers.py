@@ -39,9 +39,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         try:
             data = super().validate(attrs)
-            data['message'] = "Login successfully"
             data['username'] = self.user.username
-            data['email'] = self.user.email
+            data['message'] = "Login successfully"
             return data
         except Exception as e:
             raise serializers.ValidationError({"message": "Invalid credentials. Please check your email and password."})
@@ -65,15 +64,15 @@ class UserSerializer(serializers.ModelSerializer):
         allow_null=True,  # Allow the role to be null
         required=False  # The role field is optional
     )
-
+    password = serializers.CharField(write_only=True, required=False)
+    
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role')
-        read_only_fields = ('id',)  # Prevent ID from being modified
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'password')
+        read_only_fields = ('id',)
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
         # Make username and email optional during updates
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['username'].required = False
@@ -81,15 +80,15 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         role_data = validated_data.pop('role', None)  # Extract the role data
+        password = validated_data.pop('password', None)
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
-            password=validated_data.get('password', '')  # Password is optional here
         )
-        
-        # Assign the role if provided
+        if password:
+            user.set_password(password)
         if role_data:
             user.role = role_data
             user.save()
@@ -97,30 +96,25 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        # Update the user instance with the validated data
         instance.username = validated_data.get('username', instance.username)
         instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         
-        # Update the role if provided
         if 'role' in validated_data:
             instance.role = validated_data['role']
-        
-        # Update the password if provided
+    
         if 'password' in validated_data:
-            instance.password(validated_data['password'])
+            instance.set_password(validated_data['password'])
             
         instance.save()
         return instance
     
     def to_representation(self, instance):
-        # Customize the response for both create and update operations
         if self.context.get('is_update', False):
             message = "User updated successfully"
         else:
             message = "User created successfully"
-
         return {
             "message": message,
             "user": {
@@ -130,6 +124,5 @@ class UserSerializer(serializers.ModelSerializer):
                 "first_name": instance.first_name,
                 "last_name": instance.last_name,
                 "role": instance.role.name if instance.role else None,
-                "password": instance.password
             }
         }

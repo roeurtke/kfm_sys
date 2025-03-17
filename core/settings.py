@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'users',
     'roles',
+    'permission',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'

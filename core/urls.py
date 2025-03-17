@@ -54,5 +54,7 @@ urlpatterns = [
     
     # Role CRUD endpoints
     path('api/roles/', include('roles.urls')),
-
+    
+    # Permission CRUD endpoints
+    path('api/', include('permissions.urls')),
 ]

@@ -5,7 +5,7 @@ class Role(models.Model):
     description = models.TextField(blank=True, null=True)
 
     class Meta:
-        db_table = 'tbl_role'  # Custom table name
+        db_table = 'tbl_roles'  # Custom table name
         
     def __str__(self):
         return self.name

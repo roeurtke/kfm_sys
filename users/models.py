@@ -16,7 +16,7 @@ class CustomUser(AbstractUser):
     )
     
     class Meta:
-        db_table = 'tbl_user'  # Custom table name
+        db_table = 'tbl_users'  # Custom table name
     
     REQUIRED_FIELDS = ['email']
     

@@ -7,6 +7,7 @@ from .serializers import (
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView
 from .models import CustomUser
+from permissions.permissions import HasPermission
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -23,11 +24,11 @@ class UserListCreateView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     
     # Allow unauthenticated access for listing users (GET)
-    # Require authentication for creating users (POST)
+    # Require authentication and permission for creating users (POST)
     def get_permissions(self):
         if self.request.method == 'GET':
             return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+        return [permissions.IsAuthenticated(), HasPermission('can_create_user')]
     
     # Add context for list views
     def get_serializer_context(self):
@@ -44,10 +45,14 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     
     # Allow unauthenticated access for retrieving a user (GET)
-    # Require authentication for updating or deleting a user (PUT, PATCH, DELETE)
+    # Require authentication and permission for updating or deleting a user (PUT, PATCH, DELETE)
     def get_permissions(self):
         if self.request.method == 'GET':
             return [permissions.AllowAny()]
+        elif self.request.method in ['PUT', 'PATCH']:
+            return [permissions.IsAuthenticated(), HasPermission('can_update_user')]
+        elif self.request.method == 'DELETE':
+            return [permissions.IsAuthenticated(), HasPermission('can_delete_user')]
         return [permissions.IsAuthenticated()]
     
     # Add a context variable to indicate if the operation is an update

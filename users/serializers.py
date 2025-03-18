@@ -64,7 +64,7 @@ class UserSerializer(serializers.ModelSerializer):
         allow_null=True,  # Allow the role to be null
         required=False  # The role field is optional
     )
-    password = serializers.CharField(write_only=True, required=False)
+    password = serializers.CharField(write_only=True, required=True)
     
     class Meta:
         model = CustomUser
@@ -80,19 +80,22 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         role_data = validated_data.pop('role', None)  # Extract the role data
-        password = validated_data.pop('password', None)
+        password = validated_data.pop('password')
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
         )
-        if password:
-            user.set_password(password)
-        if role_data:
+
+        # Assign the default role if no role is provided
+        if not role_data:
+            default_role = Role.objects.get(name="Normal")
+            user.role = default_role
+        else:
             user.role = role_data
-            user.save()
         
+        user.save()
         return user
 
     def update(self, instance, validated_data):

@@ -111,39 +111,26 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
     
     def to_representation(self, instance):
-        # Check if this is a list view (many=True)
-        # Return only the user data without the message
-        if self.context.get('is_list_view', False):
-            return {
-                "id": instance.id,
-                "username": instance.username,
-                "email": instance.email,
-                "first_name": instance.first_name,
-                "last_name": instance.last_name,
-                "role": instance.role.name if instance.role else None
-            }
-        elif self.context.get('is_create', False) or self.context.get('is_update', False):
-            if self.context.get('is_update', False):
-                message = "User updated successfully"
-            else:
-                message = "User created successfully"
+        # Customize the response for both create and update operations
+        if self.context.get('is_update', False):
+            message = "User updated successfully"
+        elif self.context.get('is_create', False):
+            message = "User created successfully"
+        else:
+            message = None
+
+        response_data = {
+            "id": instance.id,
+            "username": instance.username,
+            "email": instance.email,
+            "first_name": instance.first_name,
+            "last_name": instance.last_name,
+            "role": instance.role.name if instance.role else None
+        }
+
+        if message:
             return {
                 "message": message,
-                "user": {
-                    "id": instance.id,
-                    "username": instance.username,
-                    "email": instance.email,
-                    "first_name": instance.first_name,
-                    "last_name": instance.last_name,
-                    "role": instance.role.name if instance.role else None
-                }
+                "user": response_data
             }
-        else:
-            return {
-                "id": instance.id,
-                "username": instance.username,
-                "email": instance.email,
-                "first_name": instance.first_name,
-                "last_name": instance.last_name,
-                "role": instance.role.name if instance.role else None
-            }
+        return response_data

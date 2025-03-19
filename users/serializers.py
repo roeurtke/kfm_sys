@@ -80,12 +80,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         role_data = validated_data.pop('role', None)  # Extract the role data
-        password = validated_data.pop('password')
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
+            password=validated_data['password']
         )
 
         # Assign the default role if no role is provided

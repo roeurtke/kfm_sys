@@ -9,7 +9,7 @@ class PermissionListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == 'GET':
-            return [permissions.AllowAny()]
+            return [permissions.IsAuthenticated(), HasPermission('can_view_list_permission')]
         return [permissions.IsAuthenticated(), HasPermission('can_create_permission')]
 
 class PermissionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):

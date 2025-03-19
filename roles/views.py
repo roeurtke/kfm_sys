@@ -9,7 +9,7 @@ class RoleListCreateView(generics.ListCreateAPIView):
     
     def get_permissions(self):
         if self.request.method == 'GET':
-            return [permissions.AllowAny()]
+            return [permissions.IsAuthenticated(), HasPermission('can_view_list_role')]
         return [permissions.IsAuthenticated(), HasPermission('can_create_role')]
 
 class RoleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):

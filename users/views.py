@@ -23,11 +23,10 @@ class UserListCreateView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     
-    # Allow unauthenticated access for listing users (GET)
-    # Require authentication and permission for creating users (POST)
+    # Require authentication and permission for creating users (GET, POST)
     def get_permissions(self):
         if self.request.method == 'GET':
-            return [permissions.AllowAny()]
+            return [permissions.IsAuthenticated(), HasPermission('can_view_list_user')]
         return [permissions.IsAuthenticated(), HasPermission('can_create_user')]
     
     # Add context for list views
@@ -44,8 +43,7 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     
-    # Allow unauthenticated access for retrieving a user (GET)
-    # Require authentication and permission for updating or deleting a user (PUT, PATCH, DELETE)
+    # Require authentication and permission for updating or deleting a user (GET, PUT, PATCH, DELETE)
     def get_permissions(self):
         if self.request.method == 'GET':
             return [permissions.IsAuthenticated(), HasPermission('can_view_user')]

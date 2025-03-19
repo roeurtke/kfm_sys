@@ -48,7 +48,7 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     # Require authentication and permission for updating or deleting a user (PUT, PATCH, DELETE)
     def get_permissions(self):
         if self.request.method == 'GET':
-            return [permissions.AllowAny()]
+            return [permissions.IsAuthenticated(), HasPermission('can_view_user')]
         elif self.request.method in ['PUT', 'PATCH']:
             return [permissions.IsAuthenticated(), HasPermission('can_update_user')]
         elif self.request.method == 'DELETE':

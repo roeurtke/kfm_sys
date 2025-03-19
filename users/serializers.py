@@ -77,6 +77,7 @@ class UserSerializer(serializers.ModelSerializer):
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['username'].required = False
             self.fields['email'].required = False
+            self.fields['password'].required = False
 
     def create(self, validated_data):
         role_data = validated_data.pop('role', None)  # Extract the role data

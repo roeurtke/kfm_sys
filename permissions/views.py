@@ -28,7 +28,9 @@ class PermissionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
 class RolePermissionListCreateView(generics.ListCreateAPIView):
     queryset = RolePermission.objects.all()
     serializer_class = RolePermissionSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 class RolePermissionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = RolePermission.objects.all()
     serializer_class = RolePermissionSerializer
+    permission_classes = [permissions.IsAuthenticated]

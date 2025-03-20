@@ -15,6 +15,14 @@ class CustomUser(AbstractUser):
         related_name='users',  # Allows role.users to access all users with this role
     )
     
+    # Add the spending_limit field
+    spending_limit = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0.00,
+        help_text="The maximum amount the user can spend."
+    )
+
     class Meta:
         db_table = 'tbl_users'  # Custom table name
     

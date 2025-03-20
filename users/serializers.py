@@ -28,6 +28,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
+
+        # Assign the default role "Normal" during registration
+        default_role = Role.objects.get(name="Normal")
+        user.role = default_role
+        user.save()
+
         return user
 
 # Add CustomTokenObtainPairSerializer for login
@@ -68,7 +74,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'password')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'password', 'spending_limit')
         read_only_fields = ('id',)
         
     def __init__(self, *args, **kwargs):
@@ -78,22 +84,28 @@ class UserSerializer(serializers.ModelSerializer):
             self.fields['username'].required = False
             self.fields['email'].required = False
             self.fields['password'].required = False
+            self.fields['spending_limit'].required = False
 
+    #Ensure spending_limit is non-negative.
+    def validate_spending_limit(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Spending limit cannot be negative.")
+        return value
+    
     def create(self, validated_data):
         role_data = validated_data.pop('role', None)  # Extract the role data
+        spending_limit = validated_data.pop('spending_limit', 0.00)  # Extract the spending_limit data
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
-            password=validated_data['password']
+            password=validated_data['password'],
+            spending_limit=spending_limit # Set the spending limit
         )
 
-        # Assign the default role if no role is provided
-        if not role_data:
-            default_role = Role.objects.get(name="Normal")
-            user.role = default_role
-        else:
+        # Assign the role only if provided
+        if role_data:
             user.role = role_data
         
         user.save()
@@ -110,6 +122,9 @@ class UserSerializer(serializers.ModelSerializer):
     
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
+        
+        if 'spending_limit' in validated_data:
+            instance.spending_limit = validated_data['spending_limit']
             
         instance.save()
         return instance

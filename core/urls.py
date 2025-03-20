@@ -57,4 +57,7 @@ urlpatterns = [
     
     # Permission CRUD endpoints
     path('api/', include('permissions.urls')),
+    
+    # Expense category CRUD endpoints
+    path('api/expense-categories/', include('expense_categories.urls')),
 ]

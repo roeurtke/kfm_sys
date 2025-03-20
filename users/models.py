@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 from roles.models import Role
 from django.utils.translation import gettext_lazy as _
 
@@ -14,7 +15,6 @@ class CustomUser(AbstractUser):
         blank=True,
         related_name='users',  # Allows role.users to access all users with this role
     )
-    
     # Add the spending_limit field
     spending_limit = models.DecimalField(
         max_digits=10,
@@ -22,7 +22,9 @@ class CustomUser(AbstractUser):
         default=0.00,
         help_text="The maximum amount the user can spend."
     )
-
+    created_at = models.DateTimeField(default=timezone.now)  # Automatically set when the record is created
+    updated_at = models.DateTimeField(auto_now=True)  # Automatically updated when the record is modified
+    
     class Meta:
         db_table = 'tbl_users'  # Custom table name
     

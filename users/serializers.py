@@ -144,6 +144,7 @@ class UserSerializer(serializers.ModelSerializer):
             "email": instance.email,
             "first_name": instance.first_name,
             "last_name": instance.last_name,
+            "spending_limit": instance.spending_limit,
             "role": instance.role.name if instance.role else None
         }
 

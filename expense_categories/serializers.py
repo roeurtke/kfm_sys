@@ -1,14 +1,13 @@
 from rest_framework import serializers
 from .models import ExpenseCategory
-from users.models import CustomUser
 
 class ExpenseCategorySerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())  # Allow assigning a user by ID
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # Allow assigning a user by ID
 
     class Meta:
         model = ExpenseCategory
         fields = ('id', 'name', 'description', 'master_report', 'status', 'user')  # Fields to include in the API
-        read_only_fields = ('id',)  # ID is read-only
+        read_only_fields = ('id', 'user')  # ID is read-only
 
     def validate_name(self, value):
         """Ensure the name is unique for the user."""
@@ -16,3 +15,19 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
         if ExpenseCategory.objects.filter(name=value, user=user).exists():
             raise serializers.ValidationError("An expense category with this name already exists for the user.")
         return value
+    
+    def to_representation(self, instance):
+        return {
+            "id": instance.id,
+            "name": instance.name,
+            "description": instance.description,
+            "master_report": instance.master_report,
+            "status": instance.status,
+            "user": {
+                "id": instance.user.id,
+                "username": instance.user.username,
+                "email": instance.user.email,
+                "first_name": instance.user.first_name,
+                "last_name": instance.user.last_name,
+            } if instance.user else None
+        }

@@ -74,8 +74,8 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'password', 'spending_limit')
-        read_only_fields = ('id',)
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'password', 'spending_limit', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at', 'updated_at')
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -116,6 +116,7 @@ class UserSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.spending_limit = validated_data.get('spending_limit', instance.spending_limit)
         
         if 'role' in validated_data:
             instance.role = validated_data['role']

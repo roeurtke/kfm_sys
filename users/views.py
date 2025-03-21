@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from .serializers import (
     UserRegistrationSerializer,
     CustomTokenObtainPairSerializer,
@@ -8,12 +8,23 @@ from .serializers import (
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView
 from .models import CustomUser
 from permissions.permissions import HasPermission
+from rest_framework.response import Response
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
+    
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({"message": "User registered successfully", "user": response.data}, status=status.HTTP_201_CREATED)
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+    
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == 200:
+            response.data["message"] = "Login successfully"
+        return response
 
 class CustomTokenBlacklistView(TokenBlacklistView):
     serializer_class = CustomTokenBlacklistSerializer
@@ -29,14 +40,9 @@ class UserListCreateView(generics.ListCreateAPIView):
             return [permissions.IsAuthenticated(), HasPermission('can_view_list_user')]
         return [permissions.IsAuthenticated(), HasPermission('can_create_user')]
     
-    # Add context for list views
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        if self.request.method == 'GET':
-            context['is_list_view'] = True
-        elif self.request.method == 'POST':
-            context['is_create'] = True
-        return context
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({"message": "User created successfully", "user": response.data}, status=status.HTTP_201_CREATED)
     
 # Retrieve, update, or delete a specific user (GET, PUT, PATCH, DELETE)
 class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -53,9 +59,11 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
             return [permissions.IsAuthenticated(), HasPermission('can_delete_user')]
         return [permissions.IsAuthenticated()]
     
-    # Add a context variable to indicate if the operation is an update
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        if self.request.method in ['PUT', 'PATCH']:
-            context['is_update'] = True
-        return context
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        return Response({"message": "User updated successfully", "user": response.data}, status=status.HTTP_200_OK)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"message": "The user is deleted."}, status=status.HTTP_200_OK)

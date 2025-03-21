@@ -46,7 +46,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         try:
             data = super().validate(attrs)
             data['username'] = self.user.username
-            data['message'] = "Login successfully"
             return data
         except Exception as e:
             raise serializers.ValidationError({"message": "Invalid credentials. Please check your email and password."})
@@ -119,7 +118,8 @@ class UserSerializer(serializers.ModelSerializer):
         instance.spending_limit = validated_data.get('spending_limit', instance.spending_limit)
         
         if 'role' in validated_data:
-            instance.role = validated_data['role']
+            role_name = validated_data['role']
+            instance.role = Role.objects.filter(name=role_name).first()
     
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
@@ -131,15 +131,7 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
     
     def to_representation(self, instance):
-        # Customize the response for both create and update operations
-        if self.context.get('is_update', False):
-            message = "User updated successfully"
-        elif self.context.get('is_create', False):
-            message = "User created successfully"
-        else:
-            message = None
-
-        response_data = {
+        return {
             "id": instance.id,
             "username": instance.username,
             "email": instance.email,
@@ -148,10 +140,3 @@ class UserSerializer(serializers.ModelSerializer):
             "spending_limit": instance.spending_limit,
             "role": instance.role.name if instance.role else None
         }
-
-        if message:
-            return {
-                "message": message,
-                "user": response_data
-            }
-        return response_data

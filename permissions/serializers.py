@@ -10,6 +10,7 @@ class PermissionSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['name'].required = False
+            self.fields['codename'].required = False
 
 class RolePermissionSerializer(serializers.ModelSerializer):
     class Meta:

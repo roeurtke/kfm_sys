@@ -15,7 +15,7 @@ class RoleListCreateView(generics.ListCreateAPIView):
     
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        return Response({"message": "Role created successfully", "user": response.data}, status=status.HTTP_201_CREATED)
+        return Response({"message": "Role created successfully", "role": response.data}, status=status.HTTP_201_CREATED)
 
 class RoleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Role.objects.all()
@@ -32,9 +32,9 @@ class RoleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        return Response({"message": "Role updated successfully", "user": response.data}, status=status.HTTP_200_OK)
+        return Response({"message": "Role updated successfully", "role": response.data}, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response({"message": "The Role is deleted."}, status=status.HTTP_200_OK)
+        return Response({"message": "The role is deleted."}, status=status.HTTP_200_OK)

@@ -15,7 +15,7 @@ class PermissionListCreateView(generics.ListCreateAPIView):
     
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        return Response({"message": "Permission created successfully", "user": response.data}, status=status.HTTP_201_CREATED)
+        return Response({"message": "Permission created successfully", "permission": response.data}, status=status.HTTP_201_CREATED)
 
 class PermissionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Permission.objects.all()
@@ -32,12 +32,12 @@ class PermissionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
     
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        return Response({"message": "Permission updated successfully", "user": response.data}, status=status.HTTP_200_OK)
+        return Response({"message": "Permission updated successfully", "permission": response.data}, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response({"message": "The Permission is deleted."}, status=status.HTTP_200_OK)
+        return Response({"message": "The permission is deleted."}, status=status.HTTP_200_OK)
 
 class RolePermissionListCreateView(generics.ListCreateAPIView):
     queryset = RolePermission.objects.all()

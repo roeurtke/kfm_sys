@@ -136,6 +136,8 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://yourproductiondomain.com",
+    "http://127.0.0.1:9000",
+    "http://localhost:9000",
 ]
 
 # Internationalization

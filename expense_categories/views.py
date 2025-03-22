@@ -9,20 +9,16 @@ class ExpenseCategoryListCreateView(generics.ListCreateAPIView):
     serializer_class = ExpenseCategorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # Return only the expense categories for the current user
-    def get_queryset(self):
-        return ExpenseCategory.objects.filter(user=self.request.user)
-    
-    # Automatically assign the logged-in user
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-    
     def get_permissions(self):
         if self.request.method == 'GET':
             return [permissions.IsAuthenticated(), HasPermission('can_view_list_expense_category')]
         return [permissions.IsAuthenticated(), HasPermission('can_create_expense_category')]
     
-    # Automatically assign the current user as the owner of the expense category
+    # Return only the expense categories for the current user
+    def get_queryset(self):
+        return ExpenseCategory.objects.filter(user=self.request.user)
+    
+    # Automatically assign the logged-in user
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
         
@@ -55,5 +51,5 @@ class ExpenseCategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPI
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response({"message": "The expense Category is deleted."}, status=status.HTTP_200_OK)
+        return Response({"message": "The expense category is deleted."}, status=status.HTTP_200_OK)
     

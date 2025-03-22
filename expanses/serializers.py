@@ -11,6 +11,13 @@ class ExpanseSerializer(serializers.ModelSerializer):
         model = Expanse
         fields = ('id', 'date', 'name', 'description', 'amount', 'currency', 'expense_category', 'status', 'user')
         read_only_fields = ('id',)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.context.get('request').method in ['PUT', 'PATCH']:
+            self.fields['name'].required = False
+            self.fields['amount'].required = False
+            self.fields['expense_category'].required = False
 
     def validate_amount(self, value):
         """Ensure the amount is non-negative."""

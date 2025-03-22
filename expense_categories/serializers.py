@@ -8,6 +8,11 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
         model = ExpenseCategory
         fields = ('id', 'name', 'description', 'master_report', 'status', 'user')  # Fields to include in the API
         read_only_fields = ('id', 'user')  # ID is read-only
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.context.get('request').method in ['PUT', 'PATCH']:
+            self.fields['name'].required = False
 
     def validate_name(self, value):
         """Ensure the name is unique for the user."""

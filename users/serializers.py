@@ -65,26 +65,20 @@ class CustomTokenBlacklistSerializer(TokenBlacklistSerializer):
             raise serializers.ValidationError({"message": "Invalid token. Please check your refresh token."})
 
 class UserSerializer(serializers.ModelSerializer):
-    role = serializers.SlugRelatedField(
-        queryset=Role.objects.all(),  # Fetch all roles from the database
-        slug_field='name',  # Use the 'name' field of the Role model
-        allow_null=True,  # Allow the role to be null
-        required=False  # The role field is optional
-    )
+    role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
     password = serializers.CharField(write_only=True, required=True)
     
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'password', 'spending_limit', 'created_at', 'updated_at')
-        read_only_fields = ('id', 'created_at', 'updated_at')
+        read_only_fields = ('id',)
         
+    # Make username and email optional during updates
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Make username and email optional during updates
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['username'].required = False
             self.fields['email'].required = False
-            self.fields['password'].required = False
             self.fields['spending_limit'].required = False
 
     #Ensure spending_limit is non-negative.
@@ -94,22 +88,27 @@ class UserSerializer(serializers.ModelSerializer):
         return value
     
     def create(self, validated_data):
-        role_data = validated_data.pop('role', None)  # Extract the role data
-        spending_limit = validated_data.pop('spending_limit', 0.00)  # Extract the spending_limit data
+        # Extract role and spending_limit from validated_data
+        role = validated_data.pop('role', None)
+        spending_limit = validated_data.pop('spending_limit', 0.00)
+
+        # Create the user with the remaining validated data
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
             password=validated_data['password'],
-            spending_limit=spending_limit # Set the spending limit
+            spending_limit=spending_limit
         )
 
-        # Assign the role only if provided
-        if role_data:
-            user.role = role_data
-        
-        user.save()
+        # Assign the role if provided and validate its existence
+        if role:
+            if not Role.objects.filter(id=role.id).exists():
+                raise serializers.ValidationError({"role": "Invalid role provided."})
+            user.role = role
+            user.save()  # Save the user again to update the role
+
         return user
 
     def update(self, instance, validated_data):
@@ -121,13 +120,13 @@ class UserSerializer(serializers.ModelSerializer):
         
         if 'role' in validated_data:
             role_name = validated_data['role']
-            instance.role = Role.objects.filter(name=role_name).first()
-    
+            role = Role.objects.filter(name=role_name).first()
+            if not role:
+                raise serializers.ValidationError({"role": "Role does not exist."})
+            instance.role = role
+        
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
-        
-        if 'spending_limit' in validated_data:
-            instance.spending_limit = validated_data['spending_limit']
             
         instance.save()
         return instance
@@ -140,5 +139,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name": instance.first_name,
             "last_name": instance.last_name,
             "spending_limit": instance.spending_limit,
-            "role": instance.role.name if instance.role else None
+            "role": {
+                "name": instance.role.name
+            } if instance.role else None
         }

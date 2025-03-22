@@ -30,8 +30,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
-
-        # Assign the default role "Normal" during registration
         default_role = Role.objects.get(name="Normal")
         user.role = default_role
         user.save()
@@ -72,14 +70,17 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'password', 'spending_limit', 'created_at', 'updated_at')
         read_only_fields = ('id',)
+        extra_kwargs = {
+            'first_name': {'required': True},
+            'last_name': {'required': True},
+        }
         
     # Make username and email optional during updates
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.context.get('request').method in ['PUT', 'PATCH']:
-            self.fields['username'].required = False
-            self.fields['email'].required = False
-            self.fields['spending_limit'].required = False
+            for field in ['username', 'first_name', 'last_name', 'email', 'spending_limit', 'role', 'password']:
+                self.fields[field].required = False
 
     #Ensure spending_limit is non-negative.
     def validate_spending_limit(self, value):
@@ -96,8 +97,8 @@ class UserSerializer(serializers.ModelSerializer):
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', ''),
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
             password=validated_data['password'],
             spending_limit=spending_limit
         )
@@ -118,11 +119,11 @@ class UserSerializer(serializers.ModelSerializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.spending_limit = validated_data.get('spending_limit', instance.spending_limit)
         
+        # Update role if provided
         if 'role' in validated_data:
-            role_name = validated_data['role']
-            role = Role.objects.filter(name=role_name).first()
-            if not role:
-                raise serializers.ValidationError({"role": "Role does not exist."})
+            role = validated_data['role']
+            if not Role.objects.filter(id=role.id).exists():
+                raise serializers.ValidationError({"role": "Invalid role provided."})
             instance.role = role
         
         if 'password' in validated_data:

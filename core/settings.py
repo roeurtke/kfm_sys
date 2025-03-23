@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'permissions',
     'expense_categories',
     'expanses',
+    'income_categories',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'

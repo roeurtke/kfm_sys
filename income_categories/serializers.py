@@ -1,9 +1,8 @@
 from rest_framework import serializers
 from .models import IncomeCategory
-from users.models import CustomUser
 
 class IncomeCategorySerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())  # Allow assigning a user by ID
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # Allow assigning a user by ID
 
     class Meta:
         model = IncomeCategory

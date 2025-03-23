@@ -2,7 +2,6 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import IncomeCategory
 from .serializers import IncomeCategorySerializer
-from users.models import CustomUser
 from permissions.permissions import HasPermission
 
 class IncomeCategoryListCreateView(generics.ListCreateAPIView):

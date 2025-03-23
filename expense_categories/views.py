@@ -2,7 +2,6 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import ExpenseCategory
 from .serializers import ExpenseCategorySerializer
-from users.models import CustomUser
 from permissions.permissions import HasPermission
 
 class ExpenseCategoryListCreateView(generics.ListCreateAPIView):

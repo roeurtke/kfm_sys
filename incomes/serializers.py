@@ -1,22 +1,22 @@
 from rest_framework import serializers
-from .models import Expanse
-from expense_categories.models import ExpenseCategory
+from .models import Income
+from income_categories.models import IncomeCategory
 
-class ExpanseSerializer(serializers.ModelSerializer):
-    expense_category = serializers.PrimaryKeyRelatedField(queryset=ExpenseCategory.objects.all())  # Allow assigning a category by ID
+class IncomeSerializer(serializers.ModelSerializer):
+    income_category = serializers.PrimaryKeyRelatedField(queryset=IncomeCategory.objects.all())  # Allow assigning a category by ID
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
-        model = Expanse
-        fields = ('id', 'date', 'name', 'description', 'amount', 'currency', 'expense_category', 'status', 'user')
-        read_only_fields = ('id', 'user')
+        model = Income
+        fields = ('id', 'date', 'name', 'description', 'amount', 'currency', 'income_category', 'status', 'user', 'deleted_at', 'created_at', 'updated_at')  # Fields to include in the API
+        read_only_fields = ('id', 'user')  # These fields are read-only
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['name'].required = False
             self.fields['amount'].required = False
-            self.fields['expense_category'].required = False
+            self.fields['income_category'].required = False
 
     def validate_amount(self, value):
         """Ensure the amount is non-negative."""
@@ -32,7 +32,7 @@ class ExpanseSerializer(serializers.ModelSerializer):
             "description": instance.description,
             "amount": instance.amount,
             "currency": instance.currency,
-            "expense_category": instance.expense_category.id,
+            "income_category": instance.expense_category.id,
             "status": instance.status,
             "user": {
                 "id": instance.user.id,

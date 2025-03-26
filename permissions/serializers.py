@@ -12,6 +12,16 @@ class PermissionSerializer(serializers.ModelSerializer):
             self.fields['name'].required = False
             self.fields['codename'].required = False
 
+    def to_representation(self, instance):
+        return {
+            "id": instance.id,
+            "name": instance.name,
+            "codename": instance.codename,
+            "description": instance.description,
+            "created_at": instance.created_at,
+            "updated_at": instance.updated_at
+        }
+
 class RolePermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = RolePermission

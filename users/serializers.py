@@ -142,5 +142,7 @@ class UserSerializer(serializers.ModelSerializer):
             "spending_limit": instance.spending_limit,
             "role": {
                 "name": instance.role.name
-            } if instance.role else None
+            } if instance.role else None,
+            "created_at": instance.created_at,
+            "updated_at": instance.updated_at
         }

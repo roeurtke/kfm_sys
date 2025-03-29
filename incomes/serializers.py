@@ -33,7 +33,10 @@ class IncomeSerializer(serializers.ModelSerializer):
             "description": instance.description,
             "amount": instance.amount,
             "currency": instance.currency,
-            "income_category": instance.income_category.id,
+            "income_category": {
+                "id": instance.income_category.id,
+                "name": instance.income_category.name,
+            } if instance.income_category else None,
             "status": instance.status,
             "user": {
                 "id": instance.user.id,

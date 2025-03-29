@@ -32,7 +32,10 @@ class ExpanseSerializer(serializers.ModelSerializer):
             "description": instance.description,
             "amount": instance.amount,
             "currency": instance.currency,
-            "expense_category": instance.expense_category.id,
+            "expense_category": {
+                "id": instance.expense_category.id,
+                "name": instance.expense_category.name,
+            } if instance.expense_category else None,
             "status": instance.status,
             "user": {
                 "id": instance.user.id,

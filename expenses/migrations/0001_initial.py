@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Expanse',
+            name='Expense',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
@@ -29,12 +29,12 @@ class Migration(migrations.Migration):
                 ('deleted_at', models.DateTimeField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('expense_category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='expanses', to='expense_categories.expensecategory')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='expanses', to=settings.AUTH_USER_MODEL)),
+                ('expense_category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='expenses', to='expense_categories.expensecategory')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='expenses', to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'verbose_name_plural': 'Expanses',
-                'db_table': 'tbl_expanses',
+                'verbose_name_plural': 'Expenses',
+                'db_table': 'tbl_expenses',
             },
         ),
     ]

@@ -1,13 +1,13 @@
 from rest_framework import serializers
-from .models import Expanse
+from .models import Expense
 from expense_categories.models import ExpenseCategory
 
-class ExpanseSerializer(serializers.ModelSerializer):
+class ExpenseSerializer(serializers.ModelSerializer):
     expense_category = serializers.PrimaryKeyRelatedField(queryset=ExpenseCategory.objects.all())  # Allow assigning a category by ID
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
-        model = Expanse
+        model = Expense
         fields = ('id', 'date', 'name', 'description', 'amount', 'currency', 'expense_category', 'status', 'user')
         read_only_fields = ('id', 'user')
     

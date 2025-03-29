@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'roles',
     'permissions',
     'expense_categories',
-    'expanses',
+    'expenses',
     'income_categories',
     'incomes',
 ]

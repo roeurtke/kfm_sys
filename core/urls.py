@@ -62,7 +62,7 @@ urlpatterns = [
     path('api/expense-categories/', include('expense_categories.urls')),
     
     # Expense CRUD endpoints
-    path('api/expanses/', include('expanses.urls')),
+    path('api/expenses/', include('expenses.urls')),
     
     # Income category CRUD endpoints
     path('api/income-categories/', include('income_categories.urls')),

@@ -1,11 +1,11 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from .models import Expanse
-from .serializers import ExpanseSerializer
+from .models import Expense
+from .serializers import ExpenseSerializer
 from permissions.permissions import HasPermission
 
-class ExpanseListCreateView(generics.ListCreateAPIView):
-    serializer_class = ExpanseSerializer
+class ExpenseListCreateView(generics.ListCreateAPIView):
+    serializer_class = ExpenseSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
@@ -15,7 +15,7 @@ class ExpanseListCreateView(generics.ListCreateAPIView):
     
     # Return only the expenses for the current user
     def get_queryset(self):
-        return Expanse.objects.filter(user=self.request.user)
+        return Expense.objects.filter(user=self.request.user)
 
     # Automatically assign the current user as the owner of the expense
     def perform_create(self, serializer):
@@ -25,8 +25,8 @@ class ExpanseListCreateView(generics.ListCreateAPIView):
         response = super().create(request, *args, **kwargs)
         return Response({"message": "Expense created successfully", "expense": response.data}, status=status.HTTP_201_CREATED)
 
-class ExpanseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ExpanseSerializer
+class ExpenseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ExpenseSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
@@ -40,7 +40,7 @@ class ExpanseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     
     # Return only the expenses for the current user
     def get_queryset(self):
-        return Expanse.objects.filter(user=self.request.user)
+        return Expense.objects.filter(user=self.request.user)
     
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)

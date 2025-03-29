@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ExpansesConfig(AppConfig):
+class ExpensesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'expanses'
+    name = 'expenses'

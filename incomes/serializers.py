@@ -14,6 +14,7 @@ class IncomeSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.context.get('request').method in ['PUT', 'PATCH']:
+            self.fields['date'].required = False
             self.fields['name'].required = False
             self.fields['amount'].required = False
             self.fields['income_category'].required = False
@@ -32,7 +33,7 @@ class IncomeSerializer(serializers.ModelSerializer):
             "description": instance.description,
             "amount": instance.amount,
             "currency": instance.currency,
-            "income_category": instance.expense_category.id,
+            "income_category": instance.income_category.id,
             "status": instance.status,
             "user": {
                 "id": instance.user.id,

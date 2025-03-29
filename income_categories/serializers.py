@@ -9,10 +9,10 @@ class IncomeCategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description', 'master_report', 'status', 'user', 'deleted_at', 'created_at', 'updated_at')  # Fields to include in the API
         read_only_fields = ('id', 'user')  # These fields are read-only
         
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            if self.context.get('request').method in ['PUT', 'PATCH']:
-                self.fields['name'].required = False
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.context.get('request').method in ['PUT', 'PATCH']:
+            self.fields['name'].required = False
 
     def validate_name(self, value):
         """Ensure the name is unique for the user."""

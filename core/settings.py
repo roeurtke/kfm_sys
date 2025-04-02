@@ -143,6 +143,14 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:9000",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+# For cookies if you're using them
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 

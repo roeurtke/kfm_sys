@@ -22,7 +22,7 @@ from users.views import (
     UserRegistrationView,
     CustomTokenObtainPairView,
     CustomTokenBlacklistView,
-    CustomTokenRefreshView,
+    TokenRefreshView,
 )
 
 # Swagger/OpenAPI documentation setup
@@ -42,8 +42,7 @@ urlpatterns = [
     # Authentication endpoints
     path('api/register/', UserRegistrationView.as_view(), name='register'),
     path('api/login/', CustomTokenObtainPairView.as_view(), name='login'),
-    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/logout/', CustomTokenBlacklistView.as_view(), name='logout'),
 
     # API documentation (Swagger/Redoc)

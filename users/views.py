@@ -5,8 +5,7 @@ from .serializers import (
     CustomTokenBlacklistSerializer,
     UserSerializer,
 )
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView, TokenRefreshView
-from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView
 from .models import CustomUser
 from permissions.permissions import HasPermission
 from rest_framework.response import Response
@@ -23,40 +22,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        
-        if response.status_code == status.HTTP_200_OK:
-            # Add success message to response data
-            response.data["message"] = "Login successful"
-            
-            # Get refresh token from response data
-            refresh_token = response.data.get('refresh')
-            
-            if refresh_token:
-                # Set refresh token in HttpOnly cookie
-                response.set_cookie(
-                    key='refresh_token',
-                    value=refresh_token,
-                    httponly=True,
-                    secure=True,  # For HTTPS (use in production)
-                    samesite='Lax',  # or 'Strict' depending on your needs
-                    max_age=60 * 60 * 24 * 7,  # 7 days (matches SimpleJWT's default refresh token lifetime)
-                )
-                
-                # Remove refresh token from response body
-                del response.data['refresh']
-        
+        if response.status_code == 200:
+            response.data["message"] = "Login successfully"
         return response
-
-class CustomTokenRefreshView(TokenRefreshView):
-    def post(self, request, *args, **kwargs):
-        refresh_token = request.COOKIES.get('refresh_token')
-        if not refresh_token:
-            return Response({'detail': 'Refresh token not found.'}, status=status.HTTP_400_BAD_REQUEST)
-        request.data['refresh'] = refresh_token
-        try:
-            return super().post(request, *args, **kwargs)
-        except InvalidToken as e:
-            return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
         
 class CustomTokenBlacklistView(TokenBlacklistView):
     serializer_class = CustomTokenBlacklistSerializer

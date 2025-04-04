@@ -22,8 +22,8 @@ from users.views import (
     UserRegistrationView,
     CustomTokenObtainPairView,
     CustomTokenBlacklistView,
-    TokenRefreshView,
 )
+from rest_framework_simplejwt.views import TokenRefreshView
 
 # Swagger/OpenAPI documentation setup
 schema_view = get_schema_view(

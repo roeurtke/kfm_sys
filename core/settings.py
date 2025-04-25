@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'expenses',
     'income_categories',
     'incomes',
+    'sslserver',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -142,6 +143,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:9000",
     "http://localhost:9000",
     "http://localhost:4200",
+    "http://192.168.18.149:9000",
+    "http://192.168.18.149:4200",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

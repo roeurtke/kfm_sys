@@ -7,7 +7,7 @@ class Expense(models.Model):
     date = models.DateField()  # Date of the expense
     name = models.CharField(max_length=255)  # Name of the expense
     description = models.TextField(blank=True, null=True)  # Optional description
-    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Amount of the expense
+    spent_amount = models.DecimalField(max_digits=10, decimal_places=2)  # Amount of the expense
     currency = models.CharField(max_length=3, default='USD')  # Currency code (e.g., USD, EUR)
     expense_category = models.ForeignKey(
         ExpenseCategory,  # Link to the ExpenseCategory model

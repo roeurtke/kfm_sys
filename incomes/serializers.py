@@ -8,7 +8,7 @@ class IncomeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Income
-        fields = ('id', 'date', 'name', 'description', 'amount', 'currency', 'income_category', 'status', 'user', 'deleted_at', 'created_at', 'updated_at')  # Fields to include in the API
+        fields = ('id', 'date', 'name', 'description', 'spent_amount', 'currency', 'income_category', 'status', 'user', 'deleted_at', 'created_at', 'updated_at')  # Fields to include in the API
         read_only_fields = ('id', 'user')  # These fields are read-only
     
     def __init__(self, *args, **kwargs):
@@ -16,7 +16,7 @@ class IncomeSerializer(serializers.ModelSerializer):
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['date'].required = False
             self.fields['name'].required = False
-            self.fields['amount'].required = False
+            self.fields['spent_amount'].required = False
             self.fields['income_category'].required = False
 
     def validate_amount(self, value):
@@ -31,7 +31,7 @@ class IncomeSerializer(serializers.ModelSerializer):
             "date": instance.date,
             "name": instance.name,
             "description": instance.description,
-            "amount": instance.amount,
+            "spent_amount": instance.spent_amount,
             "currency": instance.currency,
             "income_category": {
                 "id": instance.income_category.id,

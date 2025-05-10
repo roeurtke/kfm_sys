@@ -26,3 +26,19 @@ class RolePermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = RolePermission
         fields = ('id', 'role', 'permission')
+    
+    def to_representation(self, instance):
+        return {
+            "id": instance.id,
+            "role": {
+                "id": instance.role.id,
+                "name": instance.role.name,
+                "description": instance.role.description,
+            },
+            "permission": {
+                "id": instance.permission.id,
+                "name": instance.permission.name,
+                "codename": instance.permission.codename,
+                "description": instance.role.description,
+            },
+        }

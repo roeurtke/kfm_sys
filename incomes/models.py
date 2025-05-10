@@ -7,7 +7,7 @@ class Income(models.Model):
     date = models.DateField()  # Date of the income
     name = models.CharField(max_length=255)  # Name of the income
     description = models.TextField(blank=True, null=True)  # Optional description
-    spent_amount = models.DecimalField(max_digits=10, decimal_places=2)  # Amount of the income
+    income_amount = models.DecimalField(max_digits=10, decimal_places=2)  # Amount of the income
     currency = models.CharField(max_length=3, default='USD')  # Currency code (e.g., USD, EUR)
     income_category = models.ForeignKey(
         IncomeCategory,  # Link to the IncomeCategory model

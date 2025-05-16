@@ -68,7 +68,20 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'password', 'spending_limit', 'created_at', 'updated_at')
+        fields = (
+            'id',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'role',
+            'password',
+            'spending_limit',
+            'status',
+            'deleted_at',
+            'created_at',
+            'updated_at'
+        )
         read_only_fields = ('id',)
         extra_kwargs = {
             'first_name': {'required': True},
@@ -143,6 +156,7 @@ class UserSerializer(serializers.ModelSerializer):
             "role": {
                 "name": instance.role.name
             } if instance.role else None,
+            "status": instance.status,
             "created_at": instance.created_at,
             "updated_at": instance.updated_at
         }

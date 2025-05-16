@@ -6,7 +6,14 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ExpenseCategory
-        fields = ('id', 'name', 'description', 'master_report', 'status', 'user')  # Fields to include in the API
+        fields = (
+            'id',
+            'name',
+            'description',
+            'master_report',
+            'status',
+            'user'
+        )  # Fields to include in the API
         read_only_fields = ('id', 'user')  # ID is read-only
     
     def __init__(self, *args, **kwargs):

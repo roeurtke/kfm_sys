@@ -20,12 +20,29 @@ class UserRegistrationView(generics.CreateAPIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-    
+
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:
-            response.data["message"] = "Login successfully"
-        return response
+        # Validate the credentials and get the user
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            user = serializer.user
+
+            # Check if the user is not active
+            if not user.is_active:
+                return Response(
+                    {"error": "User account is deactivated."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            # Proceed with the default behavior if the user is active
+            response = super().post(request, *args, **kwargs)
+            if response.status_code == 200:
+                response.data["message"] = "Login successfully"
+            return response
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 class CustomTokenBlacklistView(TokenBlacklistView):
     serializer_class = CustomTokenBlacklistSerializer

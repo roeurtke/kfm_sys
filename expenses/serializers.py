@@ -8,7 +8,17 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Expense
-        fields = ('id', 'date', 'name', 'description', 'spent_amount', 'currency', 'expense_category', 'status', 'user')
+        fields = (
+            'id',
+            'date',
+            'name',
+            'description',
+            'spent_amount',
+            'currency',
+            'expense_category',
+            'status',
+            'user'
+        )
         read_only_fields = ('id', 'user')
     
     def __init__(self, *args, **kwargs):

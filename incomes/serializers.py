@@ -8,7 +8,20 @@ class IncomeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Income
-        fields = ('id', 'date', 'name', 'description', 'income_amount', 'currency', 'income_category', 'status', 'user', 'deleted_at', 'created_at', 'updated_at')  # Fields to include in the API
+        fields = (
+            'id',
+            'date',
+            'name',
+            'description',
+            'income_amount',
+            'currency',
+            'income_category',
+            'status',
+            'user',
+            'deleted_at',
+            'created_at',
+            'updated_at'
+        )  # Fields to include in the API
         read_only_fields = ('id', 'user')  # These fields are read-only
     
     def __init__(self, *args, **kwargs):

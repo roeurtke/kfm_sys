@@ -33,7 +33,7 @@ class RoleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        return Response({"message": "Role updated successfully", "role": response.data}, status=status.HTTP_200_OK)
+        return Response({"message": "Role updated successfully.", "role": response.data}, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
         try:

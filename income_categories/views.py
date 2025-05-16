@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import IncomeCategory
 from .serializers import IncomeCategorySerializer
 from permissions.permissions import HasPermission
+from django.utils import timezone
 
 class IncomeCategoryListCreateView(generics.ListCreateAPIView):
     serializer_class = IncomeCategorySerializer
@@ -41,7 +42,7 @@ class IncomeCategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIV
     
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        return Response({"message": "Income category updated successfully", "income_category": response.data}, status=status.HTTP_200_OK)
+        return Response({"message": "Income category updated successfully.", "income_category": response.data}, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
         try:

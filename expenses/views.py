@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Expense
 from .serializers import ExpenseSerializer
 from permissions.permissions import HasPermission
+from django.utils import timezone
 
 class ExpenseListCreateView(generics.ListCreateAPIView):
     serializer_class = ExpenseSerializer
@@ -44,7 +45,7 @@ class ExpenseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
-        return Response({"message": "Expense updated successfully", "expense": response.data}, status=status.HTTP_200_OK)
+        return Response({"message": "Expense updated successfully.", "expense": response.data}, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
         try:

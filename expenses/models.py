@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from users.models import CustomUser  # Import the CustomUser model
-from expense_categories.models import ExpenseCategory  # Import the ExpenseCategory model
+from users.models import CustomUser
+from expense_categories.models import ExpenseCategory
 
 class Expense(models.Model):
     date = models.DateField()  # Date of the expense

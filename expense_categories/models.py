@@ -3,15 +3,16 @@ from django.utils import timezone
 from users.models import CustomUser
 
 class ExpenseCategory(models.Model):
-    name = models.CharField(max_length=255, unique=True)  # Name of the category
-    description = models.TextField(blank=True, null=True)  # Optional description
-    master_report = models.BooleanField(default=False)  # Flag for master report
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True, null=True)
+    master_report = models.BooleanField(default=False)
     status = models.BooleanField(default=True)  # Active/inactive status
     user = models.ForeignKey(
         CustomUser,  # Link to the CustomUser model
         on_delete=models.CASCADE,  # Delete categories if the user is deleted
         related_name='expense_categories'  # Allows user.expense_categories to access all categories for a user
     )
+    deleted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     

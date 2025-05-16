@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from users.models import CustomUser  # Import the CustomUser model
+from users.models import CustomUser
 
 class IncomeCategory(models.Model):
     name = models.CharField(max_length=255, unique=True)

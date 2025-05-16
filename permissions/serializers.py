@@ -18,6 +18,7 @@ class PermissionSerializer(serializers.ModelSerializer):
             "name": instance.name,
             "codename": instance.codename,
             "description": instance.description,
+            "status": instance.status,
             "created_at": instance.created_at,
             "updated_at": instance.updated_at
         }
@@ -41,6 +42,7 @@ class RolePermissionSerializer(serializers.ModelSerializer):
                 "codename": instance.permission.codename,
                 "description": instance.role.description,
             },
+            "status": instance.status,
             "created_at": instance.created_at,
             "updated_at": instance.updated_at
         }

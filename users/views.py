@@ -22,6 +22,14 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
+        username = request.data.get("username")
+        try:
+            user = CustomUser.objects.get(username=username)
+            if not user.is_active:
+                return Response({"error": "User is inactive. Please contact support."}, status=status.HTTP_403_FORBIDDEN)
+        except CustomUser.DoesNotExist:
+            pass
+        
         response = super().post(request, *args, **kwargs)
         if response.status_code == 200:
             response.data["message"] = "Login successfully"

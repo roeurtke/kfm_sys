@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Role
 from .serializers import RoleSerializer
 from permissions.permissions import HasPermission
+from django.utils import timezone
 
 class RoleListCreateView(generics.ListCreateAPIView):
     queryset = Role.objects.all()
@@ -35,6 +36,12 @@ class RoleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return Response({"message": "Role updated successfully", "role": response.data}, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response({"message": "The role is deleted."}, status=status.HTTP_200_OK)
+        try:
+            instance = self.get_object()
+            instance.deleted_at = timezone.now()
+            instance.status = False
+            instance.save()
+            return Response({"message": "Role deleted successfully."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    

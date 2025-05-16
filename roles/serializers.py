@@ -16,6 +16,7 @@ class RoleSerializer(serializers.ModelSerializer):
             "id": instance.id,
             "name": instance.name,
             "description": instance.description,
+            "status": instance.status,
             "created_at": instance.created_at,
             "updated_at": instance.updated_at
         }

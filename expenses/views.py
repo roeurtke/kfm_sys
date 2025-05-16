@@ -52,6 +52,6 @@ class ExpenseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
             instance.deleted_at = timezone.now()
             instance.status = False
             instance.save()
-            return Response({"message": "The expense is deleted."}, status=status.HTTP_200_OK)
+            return Response({"message": "Expense deleted successfully."}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistVi
 from .models import CustomUser
 from permissions.permissions import HasPermission
 from rest_framework.response import Response
+from django.utils import timezone
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -64,6 +65,12 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return Response({"message": "User updated successfully", "user": response.data}, status=status.HTTP_200_OK)
     
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response({"message": "The user is deleted."}, status=status.HTTP_200_OK)
+        try:
+            instance = self.get_object()
+            instance.deleted_at = timezone.now()
+            instance.status = False
+            instance.is_active = False
+            instance.save()
+            return Response({"message": "User deleted successfully."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

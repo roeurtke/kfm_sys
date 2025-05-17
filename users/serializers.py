@@ -15,10 +15,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
+            raise serializers.ValidationError({"error": "Password fields didn't match."})
         
         if CustomUser.objects.filter(email=attrs['email']).exists():
-            raise serializers.ValidationError({"email": "Email already exists."})
+            raise serializers.ValidationError({"error": "Email already exists."})
         
         return attrs
 
@@ -48,7 +48,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             data['username'] = self.user.username
             return data
         except Exception as e:
-            raise serializers.ValidationError({"message": "Invalid credentials. Please check your email and password."})
+            raise serializers.ValidationError({"error": "Invalid credentials. Please check your email and password."})
 
 class CustomTokenBlacklistSerializer(TokenBlacklistSerializer):
     default_error_messages = {
@@ -60,7 +60,7 @@ class CustomTokenBlacklistSerializer(TokenBlacklistSerializer):
             super().validate(attrs)
             return {"message": "Logout successfully"}
         except Exception as e:
-            raise serializers.ValidationError({"message": "Invalid token. Please check your refresh token."})
+            raise serializers.ValidationError({"error": "Invalid token. Please check your refresh token."})
 
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
@@ -98,7 +98,7 @@ class UserSerializer(serializers.ModelSerializer):
     #Ensure spending_limit is non-negative.
     def validate_spending_limit(self, value):
         if value < 0:
-            raise serializers.ValidationError("Spending limit cannot be negative.")
+            raise serializers.ValidationError({"error": "Spending limit cannot be negative."})
         return value
     
     def create(self, validated_data):
@@ -136,7 +136,7 @@ class UserSerializer(serializers.ModelSerializer):
         if 'role' in validated_data:
             role = validated_data['role']
             if not Role.objects.filter(id=role.id).exists():
-                raise serializers.ValidationError({"role": "Invalid role provided."})
+                raise serializers.ValidationError({"error": "Invalid role provided."})
             instance.role = role
         
         if 'password' in validated_data:

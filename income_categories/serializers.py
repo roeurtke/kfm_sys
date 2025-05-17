@@ -28,7 +28,7 @@ class IncomeCategorySerializer(serializers.ModelSerializer):
         """Ensure the name is unique for the user."""
         user = self.context['request'].user  # Get the current user from the request context
         if IncomeCategory.objects.filter(name=value, user=user).exists():
-            raise serializers.ValidationError("An income category with this name already exists for the user.")
+            raise serializers.ValidationError({"error": "An income category with this name already exists for the user."})
         return value
     
     def to_representation(self, instance):

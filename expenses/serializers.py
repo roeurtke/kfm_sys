@@ -31,7 +31,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
     def validate_amount(self, value):
         """Ensure the amount is non-negative."""
         if value < 0:
-            raise serializers.ValidationError("Amount cannot be negative.")
+            raise serializers.ValidationError({"error": "Amount cannot be negative."})
         return value
     
     def to_representation(self, instance):

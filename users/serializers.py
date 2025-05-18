@@ -141,6 +141,9 @@ class UserSerializer(serializers.ModelSerializer):
         
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
+        
+        if 'status' in validated_data:
+            instance.status = validated_data['status']
             
         instance.save()
         return instance

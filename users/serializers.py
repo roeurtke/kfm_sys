@@ -144,6 +144,10 @@ class UserSerializer(serializers.ModelSerializer):
         
         if 'status' in validated_data:
             instance.status = validated_data['status']
+            if validated_data['status']:
+                instance.is_active = True
+            else:
+                instance.is_active = False
             
         instance.save()
         return instance

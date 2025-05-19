@@ -10,6 +10,9 @@ from .models import CustomUser
 from permissions.permissions import HasPermission
 from rest_framework.response import Response
 from django.utils import timezone
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -38,10 +41,30 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class CustomTokenBlacklistView(TokenBlacklistView):
     serializer_class = CustomTokenBlacklistSerializer
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 # List all users (GET) and create a new user (POST)
 class UserListCreateView(generics.ListCreateAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.all().order_by('-id')
     serializer_class = UserSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    
+    # Define searchable fields
+    search_fields = ['username', 'email', 'first_name', 'last_name']
+    
+    # Define filterable fields
+    filterset_fields = {
+        'status': ['exact'],
+        'role': ['exact'],
+        'created_at': ['gte', 'lte', 'exact'],
+    }
+
+    # Define ordering fields
+    ordering_fields = ['id', 'username', 'email', 'created_at', 'updated_at']
     
     # Require authentication and permission for creating users (GET, POST)
     def get_permissions(self):

@@ -67,8 +67,23 @@ class PermissionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class RolePermissionListCreateView(generics.ListCreateAPIView):
-    queryset = RolePermission.objects.all()
+    queryset = RolePermission.objects.all().order_by('-id')
     serializer_class = RolePermissionSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+    # Define searchable fields
+    search_fields = ['id', 'role__id', 'permission__id', 'role__name', 'permission__name']
+
+    # Define filterable fields
+    filterset_fields = {
+        'role': ['exact'],
+        'role__id': ['exact'],
+        'role__name': ['exact', 'icontains'],
+        'permission': ['exact'],
+        'permission__id': ['exact'],
+        'permission__name': ['exact', 'icontains'],
+    }
 
     def get_permissions(self):
         if self.request.method == 'GET':

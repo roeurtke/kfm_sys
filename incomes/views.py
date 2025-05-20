@@ -4,6 +4,14 @@ from .models import Income
 from .serializers import IncomeSerializer
 from permissions.permissions import HasPermission
 from django.utils import timezone
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class IncomeListCreateView(generics.ListCreateAPIView):
     serializer_class = IncomeSerializer

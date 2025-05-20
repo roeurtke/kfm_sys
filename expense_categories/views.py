@@ -4,10 +4,30 @@ from .models import ExpenseCategory
 from .serializers import ExpenseCategorySerializer
 from permissions.permissions import HasPermission
 from django.utils import timezone
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class ExpenseCategoryListCreateView(generics.ListCreateAPIView):
     serializer_class = ExpenseCategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+
+    # Define searchable fields
+    search_fields = ['name', 'description', 'user__username']
+
+    # Define filterable fields
+    filterset_fields = {
+        'name': ['exact', 'icontains'],
+        'description': ['exact', 'icontains'],
+        'status': ['exact'],
+        'user__username': ['exact', 'icontains'],
+    }
 
     def get_permissions(self):
         if self.request.method == 'GET':
@@ -29,7 +49,6 @@ class ExpenseCategoryListCreateView(generics.ListCreateAPIView):
 
 class ExpenseCategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ExpenseCategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.request.method == 'GET':

@@ -161,6 +161,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name": instance.last_name,
             "spending_limit": instance.spending_limit,
             "role": {
+                "id": instance.role.id,
                 "name": instance.role.name
             } if instance.role else None,
             "status": instance.status,

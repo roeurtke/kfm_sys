@@ -54,7 +54,7 @@ class UserListCreateView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     
     # Define searchable fields
-    search_fields = ['username', 'email', 'first_name', 'last_name']
+    search_fields = ['username', 'email', 'first_name', 'last_name', 'spending_limit', 'role']
     
     # Define filterable fields
     filterset_fields = {

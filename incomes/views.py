@@ -20,7 +20,7 @@ class IncomeListCreateView(generics.ListCreateAPIView):
     pagination_class = StandardResultsSetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
 
-    search_fields = ['date', 'name', 'description', 'income_amount', 'income_category__name']
+    search_fields = ['date', 'name', 'description', 'income_amount', 'income_category__name', 'user__username']
 
     filterset_fields = {
         'date': ['exact', 'year__exact', 'month__exact'],
@@ -29,6 +29,7 @@ class IncomeListCreateView(generics.ListCreateAPIView):
         'income_amount': ['exact', 'gte', 'lte'],
         'income_category__name': ['exact', 'icontains'],
         'status': ['exact'],
+        'user__username': ['exact', 'icontains'],
     }
     
     def get_permissions(self):

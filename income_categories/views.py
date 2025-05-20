@@ -15,6 +15,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class IncomeCategoryListCreateView(generics.ListCreateAPIView):
     serializer_class = IncomeCategorySerializer
+    # permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
@@ -46,7 +47,7 @@ class IncomeCategoryListCreateView(generics.ListCreateAPIView):
 
 class IncomeCategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = IncomeCategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.request.method == 'GET':

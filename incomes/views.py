@@ -14,8 +14,22 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 100
 
 class IncomeListCreateView(generics.ListCreateAPIView):
+    queryset = Income.objects.all().order_by('-id')
     serializer_class = IncomeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+
+    search_fields = ['date', 'name', 'description', 'income_amount', 'income_category__name']
+
+    filterset_fields = {
+        'date': ['exact', 'year__exact', 'month__exact'],
+        'name': ['exact', 'icontains'],
+        'description': ['exact', 'icontains'],
+        'income_amount': ['exact', 'gte', 'lte'],
+        'income_category__name': ['exact', 'icontains'],
+        'status': ['exact'],
+    }
     
     def get_permissions(self):
         if self.request.method == 'GET':
@@ -34,7 +48,7 @@ class IncomeListCreateView(generics.ListCreateAPIView):
 
 class IncomeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = IncomeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
     
     def get_permissions(self):
         if self.request.method == 'GET':

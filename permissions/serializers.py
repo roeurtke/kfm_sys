@@ -4,16 +4,20 @@ from .models import Permission, RolePermission
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
-        fields = ('id', 'name', 'codename', 'description')
+        fields = ('id', 'name', 'codename', 'description', 'status')
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['name'].required = False
             self.fields['codename'].required = False
+
     def update(self, instance, validated_data):
         if 'status' in validated_data:
             instance.status = validated_data['status']
+        
+        instance.save()
+        return instance
 
     def to_representation(self, instance):
         return {

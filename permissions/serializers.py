@@ -11,6 +11,9 @@ class PermissionSerializer(serializers.ModelSerializer):
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['name'].required = False
             self.fields['codename'].required = False
+    def update(self, instance, validated_data):
+        if 'status' in validated_data:
+            instance.status = validated_data['status']
 
     def to_representation(self, instance):
         return {

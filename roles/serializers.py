@@ -11,7 +11,7 @@ class RoleSerializer(serializers.ModelSerializer):
         if self.context.get('request').method in ['PUT', 'PATCH']:
             self.fields['name'].required = False
     
-    def updte(self, instance, validated_data):
+    def update(self, instance, validated_data):
         if 'status' in validated_data:
             instance.status = validated_data['status']
             

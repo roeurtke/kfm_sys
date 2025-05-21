@@ -54,10 +54,11 @@ class UserListCreateView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     
     # Define searchable fields
-    search_fields = ['username', 'email', 'first_name', 'last_name', 'spending_limit', 'role__name']
+    search_fields = ['username', 'email', 'first_name', 'last_name', 'spending_limit', 'role__name', 'status', 'created_at', 'updated_at']
     
     # Define filterable fields
     filterset_fields = {
+        'id': ['exact', 'gte', 'lte'],
         'username': ['exact', 'icontains'],
         'email': ['exact', 'icontains'],
         'first_name': ['exact', 'icontains'],
@@ -70,7 +71,7 @@ class UserListCreateView(generics.ListCreateAPIView):
     }
 
     # Define ordering fields
-    # ordering_fields = ['id', 'username', 'email', 'created_at', 'updated_at']
+    # ordering_fields = ['id', 'username', 'email', 'first_name', 'last_name', 'spending_limit', 'role__name', 'created_at', 'updated_at']
     
     # Require authentication and permission for creating users (GET, POST)
     def get_permissions(self):

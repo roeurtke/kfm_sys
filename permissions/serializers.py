@@ -35,6 +35,13 @@ class RolePermissionSerializer(serializers.ModelSerializer):
         model = RolePermission
         fields = ('id', 'role', 'permission')
     
+    def update(self, instance, validated_data):
+        if 'status' in validated_data:
+            instance.status = validated_data['status']
+        
+        instance.save()
+        return instance
+    
     def to_representation(self, instance):
         return {
             "id": instance.id,

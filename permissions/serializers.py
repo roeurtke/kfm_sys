@@ -33,7 +33,8 @@ class PermissionSerializer(serializers.ModelSerializer):
 class RolePermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = RolePermission
-        fields = ('id', 'role', 'permission')
+        fields = ('id', 'role', 'permission', 'status')
+        read_only_fields = ['id', 'created_at', 'updated_at']
     
     def update(self, instance, validated_data):
         if 'status' in validated_data:

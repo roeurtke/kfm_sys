@@ -10,4 +10,4 @@ class HasPermission(permissions.BasePermission):
             return False
         
         # Check if the user's role has the required permission
-        return request.user.role.role_permissions.filter(permission__codename=self.permission_codename).exists()
+        return request.user.role.role_permissions.filter(permission__codename=self.permission_codename, status=True).exists()

@@ -80,7 +80,8 @@ class UserSerializer(serializers.ModelSerializer):
             'status',
             'deleted_at',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'permissions'
         )
         read_only_fields = ('id',)
         extra_kwargs = {
@@ -153,6 +154,12 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
     
     def to_representation(self, instance):
+        # Get permissions from the user's role that are active
+        permissions = []
+        if instance.role:
+            role_permissions = instance.role.role_permissions.filter(status=True)
+            permissions = [rp.permission.codename for rp in role_permissions]
+            
         return {
             "id": instance.id,
             "username": instance.username,
@@ -166,5 +173,6 @@ class UserSerializer(serializers.ModelSerializer):
             } if instance.role else None,
             "status": instance.status,
             "created_at": instance.created_at,
-            "updated_at": instance.updated_at
+            "updated_at": instance.updated_at,
+            "permissions": permissions
         }

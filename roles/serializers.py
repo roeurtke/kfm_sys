@@ -13,6 +13,8 @@ class RoleSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         if 'status' in validated_data:
+            instance.name = validated_data['name']
+            instance.description = validated_data['description']
             instance.status = validated_data['status']
             
         instance.save()

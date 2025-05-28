@@ -79,7 +79,7 @@ class UserListCreateView(generics.ListCreateAPIView):
     }
 
     # Define ordering fields
-    # ordering_fields = ['id', 'username', 'email', 'first_name', 'last_name', 'spending_limit', 'role__name', 'created_at', 'updated_at']
+    ordering_fields = ['id', 'username', 'email', 'first_name', 'last_name', 'spending_limit', 'role__name', 'status', 'created_at', 'updated_at']
     
     # Require authentication and permission for creating users (GET, POST)
     def get_permissions(self):

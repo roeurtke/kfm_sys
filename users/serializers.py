@@ -80,8 +80,7 @@ class UserSerializer(serializers.ModelSerializer):
             'status',
             'deleted_at',
             'created_at',
-            'updated_at',
-            'permissions'
+            'updated_at'
         )
         read_only_fields = ('id',)
         extra_kwargs = {

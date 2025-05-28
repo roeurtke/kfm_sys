@@ -12,9 +12,9 @@ class RoleSerializer(serializers.ModelSerializer):
             self.fields['name'].required = False
     
     def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
         if 'status' in validated_data:
-            instance.name = validated_data['name']
-            instance.description = validated_data['description']
             instance.status = validated_data['status']
             
         instance.save()

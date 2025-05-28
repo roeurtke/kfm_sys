@@ -13,8 +13,10 @@ class PermissionSerializer(serializers.ModelSerializer):
             self.fields['codename'].required = False
 
     def update(self, instance, validated_data):
-        if 'status' in validated_data:
-            instance.status = validated_data['status']
+        instance.name = validated_data.get('name', instance.name)
+        instance.codename = validated_data.get('codename', instance.codename)
+        instance.description = validated_data.get('description', instance.description)
+        instance.status = validated_data.get('status', instance.status)
         
         instance.save()
         return instance

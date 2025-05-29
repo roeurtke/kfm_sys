@@ -26,9 +26,17 @@ class IncomeCategorySerializer(serializers.ModelSerializer):
 
     def validate_name(self, value):
         """Ensure the name is unique for the user."""
-        user = self.context['request'].user  # Get the current user from the request context
-        if IncomeCategory.objects.filter(name=value, user=user).exists():
-            raise serializers.ValidationError({"error": "An income category with this name already exists for the user."})
+        user = self.context['request'].user
+        # Get the current instance if this is an update
+        instance = getattr(self, 'instance', None)
+        
+        # Check if name exists, excluding the current instance if this is an update
+        if instance:
+            if IncomeCategory.objects.filter(name=value, user=user).exclude(pk=instance.pk).exists():
+                raise serializers.ValidationError({"error": "An income category with this name already exists for the user."})
+        else:
+            if IncomeCategory.objects.filter(name=value, user=user).exists():
+                raise serializers.ValidationError({"error": "An income category with this name already exists for the user."})
         return value
     
     def update(self, instance, validated_data):

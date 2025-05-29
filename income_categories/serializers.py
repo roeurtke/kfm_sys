@@ -31,6 +31,15 @@ class IncomeCategorySerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"error": "An income category with this name already exists for the user."})
         return value
     
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        if 'status' in validated_data:
+            instance.status = validated_data['status']
+            
+        instance.save()
+        return instance
+    
     def to_representation(self, instance):
         return {
             "id": instance.id,

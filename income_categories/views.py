@@ -15,7 +15,6 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class IncomeCategoryListCreateView(generics.ListCreateAPIView):
     serializer_class = IncomeCategorySerializer
-    # permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
@@ -36,7 +35,8 @@ class IncomeCategoryListCreateView(generics.ListCreateAPIView):
         return [permissions.IsAuthenticated(), HasPermission('can_create_income_category')]
 
     def get_queryset(self):
-        return IncomeCategory.objects.filter(user=self.request.user)
+        # Return all categories for users with permission
+        return IncomeCategory.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -47,7 +47,6 @@ class IncomeCategoryListCreateView(generics.ListCreateAPIView):
 
 class IncomeCategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = IncomeCategorySerializer
-    # permission_classes = [permissions.IsAuthenticated]
 
     def get_permissions(self):
         if self.request.method == 'GET':
@@ -59,7 +58,8 @@ class IncomeCategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIV
         return [permissions.IsAuthenticated()]
     
     def get_queryset(self):
-        return IncomeCategory.objects.filter(user=self.request.user)
+        # Return all categories for users with permission
+        return IncomeCategory.objects.all()
     
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)

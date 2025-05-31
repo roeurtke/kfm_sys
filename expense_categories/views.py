@@ -34,11 +34,10 @@ class ExpenseCategoryListCreateView(generics.ListCreateAPIView):
             return [permissions.IsAuthenticated(), HasPermission('can_view_list_expense_category')]
         return [permissions.IsAuthenticated(), HasPermission('can_create_expense_category')]
     
-    # Return only the expense categories for the current user
     def get_queryset(self):
-        return ExpenseCategory.objects.filter(user=self.request.user)
+        # Return all categories for users with permission
+        return ExpenseCategory.objects.all()
     
-    # Automatically assign the logged-in user
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
         
@@ -59,9 +58,9 @@ class ExpenseCategoryRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPI
             return [permissions.IsAuthenticated(), HasPermission('can_delete_expense_category')]
         return [permissions.IsAuthenticated()]
 
-    # Return only the expense categories for the current user
     def get_queryset(self):
-        return ExpenseCategory.objects.filter(user=self.request.user)
+        # Return all categories for users with permission
+        return ExpenseCategory.objects.all()
     
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)

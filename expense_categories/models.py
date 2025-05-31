@@ -3,7 +3,7 @@ from django.utils import timezone
 from users.models import CustomUser
 
 class ExpenseCategory(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
     master_report = models.BooleanField(default=False)
     status = models.BooleanField(default=True)  # Active/inactive status
@@ -19,7 +19,6 @@ class ExpenseCategory(models.Model):
     class Meta:
         db_table = 'tbl_expense_categories'  # Custom table name
         verbose_name_plural = 'Expense Categories'  # Plural name for admin panel
-        unique_together = ('name', 'user')
 
     def __str__(self):
         return self.name  # String representation of the model

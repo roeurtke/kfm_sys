@@ -3,7 +3,7 @@ from django.utils import timezone
 from users.models import CustomUser
 
 class IncomeCategory(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
     master_report = models.BooleanField(default=False)
     status = models.BooleanField(default=True)
@@ -19,7 +19,6 @@ class IncomeCategory(models.Model):
     class Meta:
         db_table = 'tbl_income_categories'
         verbose_name_plural = 'Income Categories'
-        unique_together = ('name', 'user')
 
     def __str__(self):
         return self.name  # String representation of the model

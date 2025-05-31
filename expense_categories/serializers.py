@@ -22,18 +22,17 @@ class ExpenseCategorySerializer(serializers.ModelSerializer):
             self.fields['name'].required = False
 
     def validate_name(self, value):
-        """Ensure the name is unique for the user."""
-        user = self.context['request'].user
+        """Ensure the name is globally unique."""
         # Get the current instance if this is an update
         instance = getattr(self, 'instance', None)
         
         # Check if name exists, excluding the current instance if this is an update
         if instance:
-            if ExpenseCategory.objects.filter(name=value, user=user).exclude(pk=instance.pk).exists():
-                raise serializers.ValidationError({"error": "An expense category with this name already exists for the user."})
+            if ExpenseCategory.objects.filter(name=value).exclude(pk=instance.pk).exists():
+                raise serializers.ValidationError({"error": "An expense category with this name already exists."})
         else:
-            if ExpenseCategory.objects.filter(name=value, user=user).exists():
-                raise serializers.ValidationError({"error": "An expense category with this name already exists for the user."})
+            if ExpenseCategory.objects.filter(name=value).exists():
+                raise serializers.ValidationError({"error": "An expense category with this name already exists."})
         return value
     
     def update(self, instance, validated_data):

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'incomes',
     'sslserver',
     'django_filters',
+    'reports',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'

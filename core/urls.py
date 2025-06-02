@@ -76,4 +76,7 @@ urlpatterns = [
     
     # Income CRUD endpoints
     path('api/incomes/', include('incomes.urls')),
+    
+    # Reports API endpoints
+    path('api/reports/', include('reports.urls')),
 ]

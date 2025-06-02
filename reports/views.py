@@ -1,4 +1,4 @@
-from django.shortcuts import render
+# from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -11,6 +11,7 @@ from django.utils import timezone
 # Create your views here.
 
 class FinancialSummaryReportView(APIView):
+    # permission_classes = [permissions.IsAuthenticated]
     permission_classes = [IsAuthenticated, HasPermission('can_view_report')]
 
     def get(self, request):

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from permissions.permissions import HasPermission
 from incomes.models import Income
 from expenses.models import Expense
 from django.db.models import Sum
@@ -10,7 +11,7 @@ from django.utils import timezone
 # Create your views here.
 
 class FinancialSummaryReportView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasPermission('can_view_report')]
 
     def get(self, request):
         user = request.user

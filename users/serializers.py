@@ -76,7 +76,6 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'role',
             'password',
-            'spending_limit',
             'status',
             'deleted_at',
             'created_at',
@@ -92,19 +91,11 @@ class UserSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.context.get('request').method in ['PUT', 'PATCH']:
-            for field in ['username', 'first_name', 'last_name', 'email', 'spending_limit', 'role', 'password']:
+            for field in ['username', 'first_name', 'last_name', 'email', 'role', 'password']:
                 self.fields[field].required = False
-
-    #Ensure spending_limit is non-negative.
-    def validate_spending_limit(self, value):
-        if value < 0:
-            raise serializers.ValidationError({"error": "Spending limit cannot be negative."})
-        return value
     
     def create(self, validated_data):
-        # Extract role and spending_limit from validated_data
         role = validated_data.pop('role', None)
-        spending_limit = validated_data.pop('spending_limit', 0.00)
 
         # Create the user with the remaining validated data
         user = CustomUser.objects.create_user(
@@ -113,7 +104,6 @@ class UserSerializer(serializers.ModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             password=validated_data['password'],
-            spending_limit=spending_limit
         )
 
         # Assign the role if provided and validate its existence
@@ -130,7 +120,6 @@ class UserSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.spending_limit = validated_data.get('spending_limit', instance.spending_limit)
         
         # Update role if provided
         if 'role' in validated_data:
@@ -165,7 +154,6 @@ class UserSerializer(serializers.ModelSerializer):
             "email": instance.email,
             "first_name": instance.first_name,
             "last_name": instance.last_name,
-            "spending_limit": instance.spending_limit,
             "role": {
                 "id": instance.role.id,
                 "name": instance.role.name
